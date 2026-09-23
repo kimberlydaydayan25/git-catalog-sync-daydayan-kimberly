@@ -10,7 +10,9 @@ function calculateLateFee(daysLate, ratePerDay) {
     return 0;
   }
 
-  return Math.min(Math.round(daysLate * ratePerDay), 20);
+  const fee = Math.round(daysLate * ratePerDay);
+
+  return Math.min(Math.max(fee, 1), 20);
 
 }
 

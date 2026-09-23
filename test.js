@@ -52,4 +52,10 @@ assertEqual(
   'late fee rounds 6.75 to 7'
 );
 
+assertEqual(
+  catalog.calculateLateFee(2, 0.2),
+  1,
+  'late fee has a $1 minimum'
+);
+
 process.exitCode = failures > 0 ? 1 : 0;
