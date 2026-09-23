@@ -1,26 +1,30 @@
+const assert = require('assert');
 const catalog = require('./catalog');
 
 let failures = 0;
 
-function assertEqual(actual, expected, label) {
-  if (actual !== expected) {
-    console.error(`FAIL: ${label} — expected ${expected}, got ${actual}`);
+function assertEqual(actual, expected, message) {
+  try {
+    assert.strictEqual(actual, expected);
+    console.log(`PASS: ${message}`);
+  } catch (error) {
     failures++;
-  } else {
-    console.log(`PASS: ${label}`);
+    console.log(`FAIL: ${message}`);
+    console.log(`  Expected: ${expected}`);
+    console.log(`  Actual: ${actual}`);
   }
 }
 
 assertEqual(
-  catalog.isValidLoan(3),
+  catalog.isValidLoan(5),
   true,
-  'a positive days-late value is valid'
+  'positive daysLate is valid'
 );
 
 assertEqual(
   catalog.isValidLoan(-1),
   false,
-  'a negative days-late value is invalid'
+  'negative daysLate is invalid'
 );
 
 const fee = catalog.calculateLateFee(5, 2.25);
@@ -34,6 +38,18 @@ assertEqual(
   catalog.calculateLateFee(10, 3),
   20,
   'late fee is capped at $20'
+);
+
+assertEqual(
+  catalog.calculateLateFee(1, 2.25),
+  0,
+  'no late fee during the 1-day grace period'
+);
+
+assertEqual(
+  catalog.calculateLateFee(3, 2.25),
+  7,
+  'late fee rounds 6.75 to 7'
 );
 
 process.exitCode = failures > 0 ? 1 : 0;
